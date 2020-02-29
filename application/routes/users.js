@@ -1,12 +1,14 @@
 var express = require('express');
 var fetch = require('node-fetch');
 var router = express.Router();
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 var db;
 var passwordChecker = require('../public/javascripts/checkPassword.js');
 var passwordHasher = require('../public/javascripts/hashing.js');
 
-MongoClient.connect('mongodb://localhost:27017', (err, database) => {
+const uri = "mongodb+srv://user:SCR3_MDB42_user@securitytaak-safkk.gcp.mongodb.net/test?retryWrites=true&w=majority";
+
+MongoClient.connect(uri, (err, database) => {
   if (err) return console.log(err)
   db = database.db('APLogin')
 })
