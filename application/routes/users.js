@@ -31,18 +31,19 @@ router.post('/signin', (req, res) => {
       if (result.password == hashedPassword) {
         res.render('about.ejs', { username: query.username })
       } else {
-        console.log("verkeerd wachtwoord!")
-        res.redirect('/users/signinPage');
+        errorMessage = "verkeerd wachtwoord!";
+        res.render('signinError.ejs', { errorMessage });
       }
     } else {
-      console.log("gebruiker bestaat niet!");
-      res.redirect('/users/signinPage');
+      errorMessage = "gebruiker bestaat niet!";
+      res.render('signinError.ejs', { errorMessage });
     }
   })
 })
 
 /* ADD USER */
 router.post('/add', (req, res) => {
+  var errorMessage = '';
   if (req.body.password == req.body.passwordCheck) {
 
     const username = req.body.username;
@@ -60,22 +61,22 @@ router.post('/add', (req, res) => {
                 res.render('about.ejs', { username: query.username });
               })
             } else {
-              console.log("Paswoord zit in een databreach, kies een ander passwoord");
-              res.redirect('/users/registerPage');
+              errorMessage = "Paswoord zit in een databreach, kies een ander passwoord";
+              res.render('registerError.ejs', { errorMessage });
             }
           }).catch(err => console.log(err))
         } else {
-          console.log("Paswoord is niet sterk genoeg!");
-          res.redirect('/users/registerPage');
+          errorMessage = "Paswoord is niet sterk genoeg, kies een ander passwoord";
+          res.render('registerError.ejs', { errorMessage });
         }
       } else {
-        console.log("Gebruiker bestaat al!");
-        res.redirect('/users/registerPage');
+        errorMessage = "Gebruiker bestaat al, kies een ander passwoord";
+        res.render('registerError.ejs', { errorMessage });
       }
     })
   } else {
-    console.log("De 2 paswoorden zijn niet hetzelfde");
-    res.redirect('/users/registerPage');
+    errorMessage = "Paswoorden zijn niet hetzelfde";
+    res.render('registerError.ejs', { errorMessage });
   }
 })
 

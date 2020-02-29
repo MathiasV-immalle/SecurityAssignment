@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="/public/stylesheets/signin.css" rel="stylesheet">
+    <title>Error</title>
+</head>
+
+<html>
+
+<body class="text-center">
+    <form class="container-signin" action='/users/signin' method='POST'>
+        <img class="mb-4" src="/public/images/ap_transparent.png" alt="AP" width="80%">
+        <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="username" id="inputUsername" name="username" class="form-control" placeholder="Username" required>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        <div class="alert alert-danger" role="alert">
+            <%= errorMessage %>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" id="signinButton">Sign in</button>
+        <a href="/users/registerPage" class="mt-8 mb-5 text-muted">Don't have an account yet?</a>
+        <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
+    </form>
+</body>
+
+</html>
