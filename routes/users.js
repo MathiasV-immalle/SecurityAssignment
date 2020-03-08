@@ -12,7 +12,6 @@ const saltRounds = 10;
 const uri = "mongodb+srv://user:SCR3_MDB42_user@securitytaak-safkk.gcp.mongodb.net/test?retryWrites=true&w=majority";
 
 var redirectLogin = (req, res, next) => {
-  console.log(session.userID)
   if (session.userID != null) {
     res.render('signin.ejs', {})
   } else {
@@ -22,7 +21,7 @@ var redirectLogin = (req, res, next) => {
 
 var redirectHome = (req, res, next) => {
   if (session.userID = null) {
-    res.render('signin.ejs', {})
+    res.render('about.ejs', { username: session.userID })
   } else {
     next()
   }
@@ -67,12 +66,12 @@ router.post('/signin', redirectHome, (req, res) => {
           session.userID = query.username;
           res.render('about.ejs', { username: query.username })
         } else {
-          errorMessage = "verkeerd wachtwoord!";
+          errorMessage = "Verkeerde inloggegevens!";
           res.render('signinError.ejs', { errorMessage });
         }
       });
     } else {
-      errorMessage = "gebruiker bestaat niet!";
+      errorMessage = "Verkeerde inloggegevens!";
       res.render('signinError.ejs', { errorMessage });
     }
   })
@@ -92,11 +91,10 @@ router.post('/register', redirectHome, (req, res) => {
           const hashedPassword = passwordHasher.hashPassword(password);
           const url = passwordChecker.makeUrl(hashedPassword);
           const part2Hash = hashedPassword.substring(5, 40).toUpperCase();
-          
+
           fetch(url).then(response => response.text()).then(text => {
             if (!text.includes(part2Hash)) {
               bcrypt.hash(password, saltRounds, function (err, hash) {
-                console.log(hash);
                 db.collection('users').insertOne(query = { username: req.body.username, password: hash }, (err, result) => {
                   session.userID = query.username;
                   res.render('about.ejs', { username: query.username });
