@@ -27,6 +27,18 @@ app.use("/public/javascripts", express.static(__dirname + "/public/javascripts")
 app.use('/', indexRouter);
 app.use('/users', userRouter);
 
+app.use(session({
+  name: "testSession",
+  resave: false,
+  saveUninitialized: false,
+  secret: "DitIsEenSecureString",
+  cookie: {
+    maxAge: 100000000,
+    sameSite: true,
+    secure: true
+  }
+}))
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

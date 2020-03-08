@@ -5,8 +5,28 @@ const MongoClient = require('mongodb').MongoClient;
 var db;
 var passwordChecker = require('../public/javascripts/checkPassword.js');
 var passwordHasher = require('../public/javascripts/hashing.js');
+var session = require('express-session');
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
 
 const uri = "mongodb+srv://user:SCR3_MDB42_user@securitytaak-safkk.gcp.mongodb.net/test?retryWrites=true&w=majority";
+
+var redirectLogin = (req, res, next) => {
+  console.log(session.userID)
+  if (session.userID != null) {
+    res.render('signin.ejs', {})
+  } else {
+    next()
+  }
+}
+
+var redirectHome = (req, res, next) => {
+  if (session.userID = null) {
+    res.render('signin.ejs', {})
+  } else {
+    next()
+  }
+}
 
 MongoClient.connect(uri, (err, database) => {
   if (err) return console.log(err)
@@ -14,28 +34,43 @@ MongoClient.connect(uri, (err, database) => {
 })
 
 /* GET LOGIN FORM*/
+// hier geen redirectHome
 router.get('/signinPage', (req, res) => {
   res.render('signin.ejs', {})
 })
 
 /* GET REGISTER USER FORM */
+// hier geen redirectHome
 router.get('/registerPage', (req, res) => {
   res.render('register.ejs', {})
 })
 
+/* LOGOUT */
+router.post('/logout', redirectLogin, (req, res) => {
+  session = null;
+  res.render('signin.ejs', {})
+})
+
+router.get('/signin', redirectLogin, (req, res) => {
+  res.render('about.ejs', {})
+})
+
 /* SIGN IN USER */
-router.post('/signin', (req, res) => {
-  const hashedPassword = passwordHasher.hashPassword(req.body.password);
+router.post('/signin', redirectHome, (req, res) => {
+  const password = req.body.password;
   var query = { username: req.body.username };
 
   db.collection('users').findOne(query, (err, result) => {
     if (result != null) {
-      if (result.password == hashedPassword) {
-        res.render('about.ejs', { username: query.username })
-      } else {
-        errorMessage = "verkeerd wachtwoord!";
-        res.render('signinError.ejs', { errorMessage });
-      }
+      bcrypt.compare(password, result.password).then(function (result) {
+        if (result) {
+          session.userID = query.username;
+          res.render('about.ejs', { username: query.username })
+        } else {
+          errorMessage = "verkeerd wachtwoord!";
+          res.render('signinError.ejs', { errorMessage });
+        }
+      });
     } else {
       errorMessage = "gebruiker bestaat niet!";
       res.render('signinError.ejs', { errorMessage });
@@ -43,8 +78,8 @@ router.post('/signin', (req, res) => {
   })
 })
 
-/* ADD USER */
-router.post('/add', (req, res) => {
+/* REGISTER USER */
+router.post('/register', redirectHome, (req, res) => {
   var errorMessage = '';
   if (req.body.password == req.body.passwordCheck) {
 
@@ -57,11 +92,16 @@ router.post('/add', (req, res) => {
           const hashedPassword = passwordHasher.hashPassword(password);
           const url = passwordChecker.makeUrl(hashedPassword);
           const part2Hash = hashedPassword.substring(5, 40).toUpperCase();
+          
           fetch(url).then(response => response.text()).then(text => {
             if (!text.includes(part2Hash)) {
-              db.collection('users').insertOne(query = { username: req.body.username, password: hashedPassword }, (err, result) => {
-                res.render('about.ejs', { username: query.username });
-              })
+              bcrypt.hash(password, saltRounds, function (err, hash) {
+                console.log(hash);
+                db.collection('users').insertOne(query = { username: req.body.username, password: hash }, (err, result) => {
+                  session.userID = query.username;
+                  res.render('about.ejs', { username: query.username });
+                })
+              });
             } else {
               errorMessage = "Paswoord zit in een databreach, kies een ander passwoord";
               res.render('registerError.ejs', { errorMessage });
@@ -72,7 +112,7 @@ router.post('/add', (req, res) => {
           res.render('registerError.ejs', { errorMessage });
         }
       } else {
-        errorMessage = "Gebruiker bestaat al, kies een ander passwoord";
+        errorMessage = "Gebruiker bestaat al, kies een andere username";
         res.render('registerError.ejs', { errorMessage });
       }
     })
