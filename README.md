@@ -30,6 +30,7 @@ Deze pagina geeft enkel de gebruikersnaam weer van de persoon die ingelogd is. I
 - [StackOverflow](https://stackoverflow.com/)
 - [W3schools](https://www.w3schools.com/)
 - [YouTube](https://www.youtube.com/)
+  - [Session Authentication in Express](https://www.youtube.com/watch?v=OH6Z0dJ_Huk&t=1s)
 - [MDN Web Docs](https://developer.mozilla.org/nl/)
 - [Enzoic](https://www.enzoic.com/docs-passwords-api/)
 - [Npmjs](https://www.npmjs.com)
