@@ -30,11 +30,8 @@ app.use('/users', userRouter);
 
 app.use(session({
   resave: false,
-  saveUninitialized: true,
-  genid: function(req) {
-    return genuuid() // use UUIDs for session IDs
-  },
-  secret: secureHash,
+  saveUninitialized: false,
+  secret: genuuid(),
   cookie: {
     maxAge: 7200000,
     sameSite: true,
