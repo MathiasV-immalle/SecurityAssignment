@@ -88,7 +88,7 @@ router.post('/register', redirectHome, (req, res) => {
                 })
               });
             } else {
-              errorMessage = "Password is in a databreach, please choose another password";
+              errorMessage = "Password is in a data breach, please choose another password";
               res.render('registerError.ejs', { errorMessage });
             }
           }).catch(err => console.log(err))
