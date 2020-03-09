@@ -29,7 +29,6 @@ app.use('/', indexRouter);
 app.use('/users', userRouter);
 
 app.use(session({
-  name: "Session",
   resave: false,
   saveUninitialized: false,
   secret: secureHash,
