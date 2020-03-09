@@ -30,7 +30,7 @@ app.use('/users', userRouter);
 
 app.use(session({
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   genid: function(req) {
     return genuuid() // use UUIDs for session IDs
   },
