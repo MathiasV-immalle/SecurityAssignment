@@ -7,7 +7,6 @@ var indexRouter = require('./routes/index');
 var userRouter = require('./routes/users');
 var session = require('express-session')
 var bcrypt = require('bcryptjs');
-
 const saltRounds = 10;
 const secureHash = bcrypt.hashSync("a497f4ef5ba588ab9a00ea71d1f4016d38683c49c7548fcef960e979682c35c9", saltRounds);
 
