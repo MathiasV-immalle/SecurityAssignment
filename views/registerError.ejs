@@ -4,13 +4,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link href="/public/stylesheets/register.css" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="96x96" href="/public/images/favicon.png">
-    <title>Error</title>
+    <title>Register</title>
 </head>
 
 <html>
 
 <body class="text-center">
-    <form class="container-signin" action='/users/add' method='POST'>
+    <form class="container-signin" action='/users/register' method='POST'>
         <img class="mb-4" src="/public/images/ap_transparent.png" alt="AP" width="80%">
         <h1 class="h3 mb-3 font-weight-normal">Create account</h1>
         <label for="inputUsername" class="sr-only">Username</label>
@@ -23,7 +23,7 @@
             <%= errorMessage %>
         </div>
         <button class="btn btn-lg btn-primary btn-block" id="loginButton">Register</button>
-        <a href="/users/signinPage" class="mt-8 mb-5 text-muted">Already have an account?</a>
+        <a href="/users/signin" class="mt-8 mb-5 text-muted">Already have an account?</a>
         <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
     </form>
 </body>

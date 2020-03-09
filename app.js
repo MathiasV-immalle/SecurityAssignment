@@ -3,11 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/users');
-
 var session = require('express-session')
+var bcrypt = require('bcryptjs');
+
+const saltRounds = 10;
+const secureHash = bcrypt.hashSync("a497f4ef5ba588ab9a00ea71d1f4016d38683c49c7548fcef960e979682c35c9", saltRounds);
 
 var app = express();
 
@@ -28,12 +30,12 @@ app.use('/', indexRouter);
 app.use('/users', userRouter);
 
 app.use(session({
-  name: "testSession",
+  name: "Session",
   resave: false,
   saveUninitialized: false,
-  secret: "DitIsEenSecureString",
+  secret: secureHash,
   cookie: {
-    maxAge: 100000000,
+    maxAge: 7200000,
     sameSite: true,
     secure: true
   }
