@@ -12,7 +12,7 @@ var redirectHome = (req, res, next) => {
 }
 
 /* GET SIGNIN PAGE */
-router.get('/', redirectHome, function(req, res, next) {
+router.get('/', redirectHome, function (req, res, next) {
   res.redirect('/users/signin');
 });
 

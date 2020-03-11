@@ -16,7 +16,7 @@ MongoClient.connect(uri, (err, database) => {
 })
 
 var redirectSignin = (req, res, next) => {
-  if (session.userID == null) {
+  if (req.session.userID == null) {
     res.render('signin.ejs', {})
   } else {
     next()
@@ -35,13 +35,12 @@ router.get('/register', (req, res) => {
 
 /* GET HOME PAGE */
 router.get('/home', redirectSignin, (req, res) => {
-  res.render('home.ejs', {username: session.userID})
+  res.render('home.ejs', { username: req.session.userID })
 })
 
 /* LOGOUT USER */
 router.post('/logout', (req, res) => {
-  session.userID = null;
-  
+  req.session.destroy();
   res.render('signin.ejs', {})
 })
 
@@ -54,9 +53,8 @@ router.post('/signin', (req, res) => {
     if (result != null) {
       bcrypt.compare(password, result.password).then(function (result) {
         if (result) {
-          session.userID = query.username;
+          req.session.userID = query.username;
           res.redirect('/users/home')
-          //res.render('home.ejs', { username: query.username })
         } else {
           errorMessage = "Invalid credentials";
           res.render('signinError.ejs', { errorMessage });
@@ -88,7 +86,7 @@ router.post('/register', (req, res) => {
             if (!text.includes(part2Hash)) {
               bcrypt.hash(password, saltRounds, function (err, hash) {
                 db.collection('users').insertOne(query = { username: req.body.username, password: hash }, (err, result) => {
-                  session.userID = query.username;
+                  req.session.userID = query.username;
                   res.redirect('/users/home')
                 })
               });
