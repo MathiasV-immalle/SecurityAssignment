@@ -23,19 +23,19 @@ app.use("/public/stylesheets", express.static(__dirname + "/public/stylesheets")
 app.use("/public/images", express.static(__dirname + "/public/images"));
 app.use("/public/javascripts", express.static(__dirname + "/public/javascripts"));
 
-app.use('/', indexRouter);
-app.use('/users', userRouter);
-
 app.use(session({
-  resave: true,
-  saveUninitialized: false,
+  resave: false,
+  saveUninitialized: true,
   secret: randomstring.generate(),
   cookie: {
     maxAge: 7200000,
     sameSite: true,
-    secure: true
+    secure: false
   }
 }))
+
+app.use('/', indexRouter);
+app.use('/users', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
