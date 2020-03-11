@@ -2,16 +2,16 @@ var express = require('express');
 var router = express.Router();
 var session = require('express-session');
 
-/* PREVENTS USERS THAT ARE NOT LOGGED IN TO SEE HOME PAGE */
+/* Sends user with active session to home page */
 var redirectHome = (req, res, next) => {
-  if (session.userID != null) {
-    res.render('home.ejs', { username: session.userID })
+  if (req.session.userID != null) {
+    res.render('home.ejs', { username: req.session.userID })
   } else {
     next()
   }
 }
 
-/* GET SIGNIN PAGE */
+/* Get index page */
 router.get('/', redirectHome, function (req, res, next) {
   res.redirect('/users/signin');
 });

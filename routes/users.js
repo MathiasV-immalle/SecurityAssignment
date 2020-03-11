@@ -10,42 +10,55 @@ var db;
 const saltRounds = 10;
 const uri = "mongodb+srv://user:SCR3_MDB42_user@securitytaak-safkk.gcp.mongodb.net/test?retryWrites=true&w=majority";
 
+/* Connect to MongoDB database */
 MongoClient.connect(uri, (err, database) => {
   if (err) return console.log(err)
   db = database.db('APLogin')
 })
 
+/* Redirect to signin page */
 var redirectSignin = (req, res, next) => {
   if (req.session.userID == null) {
-    res.render('signin.ejs', {})
+    res.redirect('/users/signin');
   } else {
     next()
   }
 }
 
-/* GET SIGNIN PAGE */
-router.get('/signin', (req, res) => {
-  res.render('signin.ejs', {})
+/* Redirect to home page */
+var redirectHome = (req, res, next) => {
+  if (req.session.userID != undefined) {
+    if (req.session.userID != null) {
+      res.redirect('/users/home');
+    }
+  } else {
+    next()
+  }
+}
+
+/* Get signin page */
+router.get('/signin', redirectHome, (req, res) => {
+  res.render('signin.ejs')
 })
 
-/* GET REGISTER PAGE */
-router.get('/register', (req, res) => {
-  res.render('register.ejs', {})
+/* Get register page */
+router.get('/register', redirectHome, (req, res) => {
+  res.render('register.ejs')
 })
 
-/* GET HOME PAGE */
+/* Get home page */
 router.get('/home', redirectSignin, (req, res) => {
   res.render('home.ejs', { username: req.session.userID })
 })
 
-/* LOGOUT USER */
+/* Logout user */
 router.post('/logout', (req, res) => {
   req.session.destroy();
-  res.render('signin.ejs', {})
+  res.redirect('/users/signin');
 })
 
-/* SIGN IN USER */
-router.post('/signin', (req, res) => {
+/* Sign in user */
+router.post('/signin', redirectHome, (req, res) => {
   const password = req.body.password;
   var query = { username: req.body.username };
 
@@ -67,8 +80,8 @@ router.post('/signin', (req, res) => {
   })
 })
 
-/* REGISTER USER */
-router.post('/register', (req, res) => {
+/* Register user */
+router.post('/register', redirectHome, (req, res) => {
   var errorMessage = '';
   if (req.body.password == req.body.passwordCheck) {
 
