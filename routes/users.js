@@ -10,13 +10,15 @@ var db;
 const saltRounds = 10;
 const uri = "mongodb+srv://user:SCR3_MDB42_user@securitytaak-safkk.gcp.mongodb.net/test?retryWrites=true&w=majority";
 
+var sess = session;
+
 MongoClient.connect(uri, (err, database) => {
   if (err) return console.log(err)
   db = database.db('APLogin')
 })
 
 var redirectSignin = (req, res, next) => {
-  if (session.userID == null) {
+  if (sess.userID == null) {
     res.render('signin.ejs', {})
   } else {
     next()
@@ -35,12 +37,12 @@ router.get('/register', (req, res) => {
 
 /* GET HOME PAGE */
 router.get('/home', redirectSignin, (req, res) => {
-  res.render('home.ejs', {username: session.userID})
+  res.render('home.ejs', {username: sess.userID})
 })
 
 /* LOGOUT USER */
 router.post('/logout', (req, res) => {
-  session.userID = null;
+  sess.userID = null;
   res.render('signin.ejs', {})
 })
 
@@ -53,7 +55,7 @@ router.post('/signin', (req, res) => {
     if (result != null) {
       bcrypt.compare(password, result.password).then(function (result) {
         if (result) {
-          session.userID = query.username;
+          sess.userID = query.username;
           res.redirect('/users/home')
           //res.render('home.ejs', { username: query.username })
         } else {
@@ -87,7 +89,7 @@ router.post('/register', (req, res) => {
             if (!text.includes(part2Hash)) {
               bcrypt.hash(password, saltRounds, function (err, hash) {
                 db.collection('users').insertOne(query = { username: req.body.username, password: hash }, (err, result) => {
-                  session.userID = query.username;
+                  sess.userID = query.username;
                   res.redirect('/users/home')
                 })
               });
