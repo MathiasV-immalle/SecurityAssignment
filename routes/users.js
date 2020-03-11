@@ -15,15 +15,28 @@ MongoClient.connect(uri, (err, database) => {
   db = database.db('APLogin')
 })
 
-/* PREVENTS USERS THAT ARE NOT LOGGED IN TO SEE HOME PAGE */
-/* LOGGED IN = HOME PAGE, NOT LOGGED IN = SIGNIN PAGE */
-var redirectHome = (req, res, next) => {
-  if (session.userID != null) {
-    res.render('home.ejs', { username: session.userID })
+var redirectSignin = (req, res, next) => {
+  if (session.userID == null) {
+    res.render('signin.ejs', {})
   } else {
     next()
   }
 }
+
+/* GET SIGNIN PAGE */
+router.get('/signin', (req, res) => {
+  res.render('signin.ejs', {})
+})
+
+/* GET REGISTER PAGE */
+router.get('/register', (req, res) => {
+  res.render('register.ejs', {})
+})
+
+/* GET HOME PAGE */
+router.get('/home', redirectSignin, (req, res) => {
+  res.render('home.ejs', {username: session.userID})
+})
 
 /* LOGOUT USER */
 router.post('/logout', (req, res) => {
@@ -31,18 +44,8 @@ router.post('/logout', (req, res) => {
   res.render('signin.ejs', {})
 })
 
-/* GET SIGNIN PAGE */
-router.get('/signin', redirectHome, (req, res) => {
-  res.render('signin.ejs', {})
-})
-
-/* GET REGISTER PAGE */
-router.get('/register', redirectHome, (req, res) => {
-  res.render('register.ejs', {})
-})
-
 /* SIGN IN USER */
-router.post('/signin', redirectHome, (req, res) => {
+router.post('/signin', (req, res) => {
   const password = req.body.password;
   var query = { username: req.body.username };
 
@@ -51,7 +54,8 @@ router.post('/signin', redirectHome, (req, res) => {
       bcrypt.compare(password, result.password).then(function (result) {
         if (result) {
           session.userID = query.username;
-          res.render('home.ejs', { username: query.username })
+          res.redirect('/users/home')
+          //res.render('home.ejs', { username: query.username })
         } else {
           errorMessage = "Invalid credentials";
           res.render('signinError.ejs', { errorMessage });
@@ -65,7 +69,7 @@ router.post('/signin', redirectHome, (req, res) => {
 })
 
 /* REGISTER USER */
-router.post('/register', redirectHome, (req, res) => {
+router.post('/register', (req, res) => {
   var errorMessage = '';
   if (req.body.password == req.body.passwordCheck) {
 
@@ -84,7 +88,7 @@ router.post('/register', redirectHome, (req, res) => {
               bcrypt.hash(password, saltRounds, function (err, hash) {
                 db.collection('users').insertOne(query = { username: req.body.username, password: hash }, (err, result) => {
                   session.userID = query.username;
-                  res.render('home.ejs', { username: query.username });
+                  res.redirect('/users/home')
                 })
               });
             } else {

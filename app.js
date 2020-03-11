@@ -27,7 +27,7 @@ app.use('/', indexRouter);
 app.use('/users', userRouter);
 
 app.use(session({
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   secret: randomstring.generate(),
   cookie: {
