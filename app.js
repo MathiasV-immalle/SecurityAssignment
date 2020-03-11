@@ -29,12 +29,7 @@ app.use('/users', userRouter);
 app.use(session({
   resave: true,
   saveUninitialized: false,
-  secret: randomstring.generate(),
-  cookie: {
-    maxAge: 7200000,
-    sameSite: true,
-    secure: true
-  }
+  secret: randomstring.generate()
 }))
 
 // catch 404 and forward to error handler
