@@ -4,7 +4,6 @@ var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var passwordChecker = require('../public/javascripts/checkPassword.js');
 var passwordHasher = require('../public/javascripts/hashing.js');
-var session = require('express-session');
 var bcrypt = require('bcryptjs');
 var db;
 const saltRounds = 10;
